@@ -1,0 +1,86 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: My API
+paths:
+  /api/Users:
+    get:
+      tags:
+        - Address
+      operationId: ApiAddressGet
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AddressModel'
+    post:
+      tags:
+        - Address
+      operationId: ApiAddressPost
+      consumes:
+        - application/json
+      produces: []
+      parameters:
+        - name: model
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/AddressModel'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+definitions:
+  AddressModel:
+    required:
+      - firstName
+      - lastName
+      - address
+      - city
+      - postalCode
+      - emailAddress
+    type: object
+    properties:
+      firstName:
+        maxLength: 100
+        minLength: 1
+        pattern: '^[a-zA-Z\''\s]+$'
+        type: string
+      lastName:
+        maxLength: 100
+        minLength: 1
+        pattern: '^[a-zA-Z\''\s]+$'
+        type: string
+      address:
+        minLength: 1
+        maxLength: 100
+        pattern: '^[\w\''\s]+$'
+        type: string
+      address2:
+        minLength: 1
+        maxLength: 100
+        pattern: '^[\w\''\s]+$'
+        type: string
+      city:
+        minLength: 1
+        maxLength: 100
+        pattern: '^[\w\''\s]+$'
+        type: string
+      postalCode:
+        minLength: 4
+        maxLength: 8
+        pattern: '^[\w\s]+$'
+        type: string
+      emailAddress:
+        format: email
+        pattern: '^[\w\@\!\#\%\&\''\*\+\-\/\=\?\`\{\|\}\~\.]+$'
+        type: string

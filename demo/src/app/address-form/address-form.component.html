@@ -1,0 +1,80 @@
+<form [formGroup]="addressForm" novalidate>
+  <mat-card class="shipping-card">
+    <mat-card-header>
+      <mat-card-title>Shipping Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="First name" formControlName="firstName">
+            <mat-error>
+              <app-error fieldName="First name" [control]="addressForm.controls['firstName']"></app-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Last name" formControlName="lastName">
+            <mat-error>
+              <app-error fieldName="Last name" [control]="addressForm.controls['lastName']"></app-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <textarea matInput placeholder="Address" formControlName="address"></textarea>
+            <mat-error>
+              <app-error fieldName="Address" [control]="addressForm.controls['address']"></app-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <textarea matInput placeholder="Address line 2" formControlName="address2"></textarea>
+            <mat-error>
+              <app-error fieldName="Address line 2" [control]="addressForm.controls['address2']"></app-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="City" formControlName="city">
+            <mat-error>
+              <app-error fieldName="City" [control]="addressForm.controls['city']"></app-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Postal Code" type="text" formControlName="postalCode">
+            <mat-error>
+              <app-error fieldName="Postal Code" [control]="addressForm.controls['postalCode']"></app-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Email Address" type="text" formControlName="emailAddress">
+              <mat-error>
+                <app-error fieldName="Email Address" [control]="addressForm.controls['emailAddress']"></app-error>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

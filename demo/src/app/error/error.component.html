@@ -1,0 +1,15 @@
+<ng-container *ngIf="control.hasError('required')">
+  {{ fieldName }} is required.
+</ng-container>
+<ng-container *ngIf="control.hasError('minlength')">
+  {{ fieldName }} is too short. The minimum Length is {{ control.errors['minlength'].requiredLength }}
+</ng-container>
+<ng-container *ngIf="control.hasError('maxlength')">
+  {{ fieldName }} is too long. The maximum Length is {{ control.errors['maxlength'].requiredLength }}
+</ng-container>
+<ng-container *ngIf="control.hasError('pattern')">
+  {{ fieldName }} is invalid.
+</ng-container>
+<ng-container *ngIf="control.hasError('email')">
+  {{ fieldName }} must be a valid email address.
+</ng-container>
