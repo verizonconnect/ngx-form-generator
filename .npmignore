@@ -1,0 +1,11 @@
+dist/generator-cli.d.ts
+dist/*.spec.js
+dist/*.spec.d.ts
+demo/
+src/
+tsconfig.json
+.eslint*
+.prettierrc
+.gitignore
+.npmignore
+.commitlintrc.json
