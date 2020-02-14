@@ -6,7 +6,7 @@
  * Copyright (c) 2020 Verizon
  */
 
-import Project from 'ts-simple-ast';
+import { Project } from 'ts-morph';
 import prettier from 'prettier';
 import camelcase from 'camelcase';
 import { requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule } from './rules';
