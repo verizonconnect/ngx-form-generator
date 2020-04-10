@@ -1,6 +1,6 @@
 {
   "name": "@verizonconnect/ngx-form-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generates an Angular ReactiveForm from a Swagger or OpenAPI definition",
   "main": "dist/generator-lib.js",
   "repository": "github:verizonconnect/ngx-form-generator",
@@ -27,32 +27,31 @@
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.2.0",
-    "@commitlint/prompt": "^8.3.5",
     "@types/camelcase": "^4.1.0",
     "@types/jasmine": "^2.8.9",
-    "@types/node-fetch": "^2.1.2",
-    "@types/prettier": "^1.13.2",
+    "@types/node-fetch": "^2.5.5",
+    "@types/prettier": "^1.19.1",
     "@types/yaml": "^1.2.0",
     "@types/yargs": "^13.0.8",
-    "@typescript-eslint/eslint-plugin": "^2.19.2",
-    "@typescript-eslint/parser": "^2.19.2",
-    "commitiquette": "^1.0.2",
-    "commitizen": "^4.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "commitiquette": "^1.0.4",
+    "commitizen": "^4.0.4",
     "conventional-changelog-cli": "^2.0.31",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
+    "eslint-config-prettier": "^6.10.1",
     "husky": "^3.1.0",
     "jasmine": "^3.2.0",
     "lint-staged": "^9.5.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "camelcase": "^5.0.0",
     "node-fetch": "^2.2.0",
     "prettier": "^1.19.1",
-    "ts-morph": "^6.0.2",
-    "yaml": "^1.7.2",
-    "yargs": "^15.0.2"
+    "ts-morph": "^6.0.3",
+    "yaml": "^1.8.3",
+    "yargs": "^15.3.1"
   },
   "husky": {
     "hooks": {
