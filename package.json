@@ -1,6 +1,6 @@
 {
   "name": "@verizonconnect/ngx-form-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Generates an Angular ReactiveForm from a Swagger or OpenAPI definition",
   "main": "dist/generator-lib.js",
   "repository": "github:verizonconnect/ngx-form-generator",
@@ -35,7 +35,7 @@
     "@types/yargs": "^13.0.8",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
-    "commitiquette": "^1.0.4",
+    "commitiquette": "^1.0.5",
     "commitizen": "^4.0.4",
     "conventional-changelog-cli": "^2.0.31",
     "eslint": "^6.8.0",
