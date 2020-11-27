@@ -6,23 +6,14 @@
  * Copyright (c) 2020 Verizon
  */
 
-import {
-  OpenApi2,
-  makeForm,
-  makeFileName,
-  addRule,
-  Rule,
-  Definition,
-  OpenApi3,
-  OpenApi,
-  resetRules
-} from './generator-lib';
+import { OpenAPI, OpenAPIV2, OpenAPIV3 } from 'openapi-types';
+import { makeForm, makeFileName, addRule, Rule, Definition, resetRules, loadSpec } from './generator-lib';
 
 describe('generator-lib ', () => {
-  let spec: OpenApi;
+  let spec: OpenAPI.Document;
 
   beforeEach(() => {
-    spec = {
+    spec = ({
       definitions: {
         foo: {
           required: ['bar'],
@@ -31,7 +22,7 @@ describe('generator-lib ', () => {
           }
         }
       }
-    };
+    } as Partial<OpenAPI.Document>) as OpenAPI.Document;
   });
 
   describe('makeFile', () => {
@@ -62,20 +53,30 @@ describe('generator-lib ', () => {
     });
 
     it('should return camelized.ts file name if title exits', () => {
-      spec.info = { title: 'Foo bar_baz' };
+      spec.info = { title: 'Foo bar_baz', version: '' };
 
       const result = makeFileName(spec);
 
       expect(result).toEqual('fooBarBaz.ts');
     });
   });
+
+  describe('allOf', () => {
+    it('should generate form using allOf polymorphism', async () => {
+      spec = await loadSpec('src/fixtures/pets.json');
+
+      const result = makeForm(spec);
+
+      expect(result.match(/petType:/g)?.length).toEqual(3);
+    });
+  });
 });
 
 describe('generator-lib openApi2', () => {
-  let spec: OpenApi2;
+  let spec: OpenAPIV2.Document;
 
   beforeEach(() => {
-    spec = {
+    spec = ({
       definitions: {
         foo: {
           required: ['bar'],
@@ -84,15 +85,15 @@ describe('generator-lib openApi2', () => {
           }
         }
       }
-    };
+    } as Partial<OpenAPIV2.Document>) as OpenAPIV2.Document;
   });
 
   afterEach(() => resetRules());
 
   describe('addRule', () => {
     beforeEach(() => {
-      spec.definitions.foo.properties.bar.format = 'baz';
-      spec.definitions.foo.required = [];
+      (spec as any).definitions.foo.properties.bar.format = 'baz';
+      (spec as any).definitions.foo.required = [];
     });
 
     const bazRule: Rule = (fieldName: string, definition: Definition) => {
@@ -110,10 +111,10 @@ describe('generator-lib openApi2', () => {
 });
 
 describe('generator-lib openApi3', () => {
-  let spec: OpenApi3;
+  let spec: OpenAPIV3.Document;
 
   beforeEach(() => {
-    spec = {
+    spec = ({
       components: {
         schemas: {
           foo: {
@@ -124,15 +125,15 @@ describe('generator-lib openApi3', () => {
           }
         }
       }
-    };
+    } as Partial<OpenAPIV3.Document>) as OpenAPIV3.Document;
   });
 
   afterEach(() => resetRules());
 
   describe('addRule', () => {
     beforeEach(() => {
-      spec.components.schemas.foo.properties.bar.format = 'baz';
-      spec.components.schemas.foo.required = [];
+      (spec as any).components.schemas.foo.properties.bar.format = 'baz';
+      (spec as any).components.schemas.foo.required = [];
     });
 
     const bazRule: Rule = (fieldName: string, definition: Definition) => {

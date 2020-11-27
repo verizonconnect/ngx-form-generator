@@ -10,25 +10,10 @@ import { Project } from 'ts-morph';
 import prettier from 'prettier';
 import camelcase from 'camelcase';
 import { requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule } from './rules';
-import fetch from 'node-fetch';
-import { cwd } from 'process';
-import { join } from 'path';
-import YAML from 'yaml';
-import { readFileSync } from 'fs';
+import SwaggerParser from '@apidevtools/swagger-parser';
+import { OpenAPI, OpenAPIV2, OpenAPIV3 } from 'openapi-types';
 
-export type OpenApi2 = {
-  definitions: Definitions;
-  info?: { title: string };
-};
-
-export type OpenApi3 = {
-  components: { schemas: Definitions };
-  info?: { title: string };
-};
-
-export type OpenApi = OpenApi2 | OpenApi3;
-
-export type Definitions = Record<string, Definition>;
+export type Definitions = OpenAPIV2.DefinitionsObject | OpenAPIV3.NonArraySchemaObject;
 
 export type Definition = {
   required: string[];
@@ -58,30 +43,40 @@ export function resetRules(): void {
   rules = [...DEFAULT_RULES];
 }
 
-export function makeFileName(swagger: OpenApi): string | undefined {
+export function makeFileName(swagger: OpenAPI.Document): string | undefined {
   if (swagger.info && swagger.info.title) {
     return `${camelcase(swagger.info.title)}.ts`;
   }
 }
 
-function makeFieldRules(fieldName: string, definition: Definition): string {
+function makeFieldRules(fieldName: string, definition: OpenAPIV2.DefinitionsObject): string {
   return rules
-    .map(rule => rule(fieldName, definition))
+    .map(rule => rule(fieldName, definition as Definition))
     .filter(item => item != '')
     .join();
 }
 
-function makeField(fieldName: string, definition: Definition): string {
+function makeField(fieldName: string, definition: OpenAPIV2.DefinitionsObject): string {
   return `${fieldName}: new FormControl(null, [${makeFieldRules(fieldName, definition)}])`;
 }
 
-function makeDefinition(definitionName: string, definition: Definition): string {
-  const fields = Object.keys(definition.properties);
-  const fieldsBody = fields
-    .map(fieldName => makeField(fieldName, definition))
-    .filter(item => item !== '')
-    .join();
+function makeFieldsBody(definition: OpenAPIV2.DefinitionsObject): string[] {
+  if ('allOf' in definition) {
+    const definitionKeys = Object.keys(definition.allOf);
+    const allOfFieldsBody = definitionKeys
+      .map(key => makeFieldsBody(definition.allOf[key]))
+      .reduce((acc, val) => acc.concat(val), []);
 
+    return allOfFieldsBody;
+  }
+  const fields = Object.keys(definition.properties);
+  const fieldsBody = fields.map(fieldName => makeField(fieldName, definition)).filter(item => item !== '');
+
+  return fieldsBody;
+}
+
+function makeDefinition(definitionName: string, definition: OpenAPIV2.DefinitionsObject): string {
+  const fieldsBody = makeFieldsBody(definition);
   return `
     export const ${camelcase(definitionName)}Form = new FormGroup({
       ${fieldsBody}
@@ -95,20 +90,24 @@ function makeHeader(body: string): string {
   ${body}`;
 }
 
-export function makeForm(spec: OpenApi): string {
-  let definitions: Definitions;
+export function makeForm(spec: OpenAPI.Document): string {
+  let definitions: OpenAPIV2.DefinitionsObject | OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject | undefined;
   if ('definitions' in spec) {
     definitions = spec.definitions;
   } else if ('components' in spec) {
-    definitions = spec.components.schemas;
+    definitions = spec.components?.schemas;
   } else {
+    throw new Error('Cannot find schemas/definitions');
+  }
+
+  if (!definitions) {
     throw new Error('Cannot find schemas/definitions');
   }
 
   const definitionKeys = Object.keys(definitions);
 
   const forms = definitionKeys
-    .map(key => makeDefinition(key, definitions[key]))
+    .map(key => makeDefinition(key, (definitions as Record<string, Definition>)[key]))
     .filter(item => item != '')
     .join('');
 
@@ -123,36 +122,8 @@ export async function saveFile(file: string, fileName: string): Promise<void> {
   return project.save();
 }
 
-function isYaml(value: string): boolean {
-  return /\.ya?ml$/.test(value);
-}
+export async function loadSpec(fileOrUrlPath: string): Promise<OpenAPI.Document> {
+  const parser = new SwaggerParser();
 
-function isUrl(value: string): boolean {
-  return /^http(s?):\/\//.test(value);
-}
-
-async function loadUrl(urlPath: string): Promise<OpenApi> {
-  const response = await fetch(urlPath);
-  if (isYaml(urlPath)) {
-    return Promise.resolve(YAML.parse(await response.text()));
-  }
-
-  return response.json();
-}
-
-async function loadFile(filePath: string): Promise<OpenApi> {
-  if (isYaml(filePath)) {
-    const file = readFileSync(filePath, 'utf8');
-    return Promise.resolve(YAML.parse(file));
-  }
-
-  return Promise.resolve(require(join(cwd(), filePath)));
-}
-
-export async function loadSpec(fileOrUrlPath: string): Promise<OpenApi> {
-  if (isUrl(fileOrUrlPath)) {
-    return loadUrl(fileOrUrlPath);
-  } else {
-    return loadFile(fileOrUrlPath);
-  }
+  return parser.dereference(fileOrUrlPath);
 }
