@@ -9,27 +9,9 @@
 import { Project } from 'ts-morph';
 import prettier from 'prettier';
 import camelcase from 'camelcase';
-import { requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule } from './rules';
+import { requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule, Definition, Rule } from './rules';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { OpenAPI, OpenAPIV2, OpenAPIV3 } from 'openapi-types';
-
-export type Definitions = OpenAPIV2.DefinitionsObject | OpenAPIV3.NonArraySchemaObject;
-
-export type Definition = {
-  required: string[];
-  properties: Properties;
-};
-
-export type Property = {
-  format?: string;
-  pattern?: string;
-  maxLength?: number;
-  minLength?: number;
-};
-
-export type Properties = Record<string, Property>;
-
-export type Rule = (fieldName: string, properties: Definition) => string;
 
 const DEFAULT_RULES = [requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule];
 
@@ -49,18 +31,18 @@ export function makeFileName(swagger: OpenAPI.Document): string | undefined {
   }
 }
 
-function makeFieldRules(fieldName: string, definition: OpenAPIV2.DefinitionsObject): string {
+function makeFieldRules(fieldName: string, definition: Definition): string {
   return rules
-    .map(rule => rule(fieldName, definition as Definition))
+    .map(rule => rule(fieldName, definition))
     .filter(item => item != '')
     .join();
 }
 
-function makeField(fieldName: string, definition: OpenAPIV2.DefinitionsObject): string {
+function makeField(fieldName: string, definition: Definition): string {
   return `${fieldName}: new FormControl(null, [${makeFieldRules(fieldName, definition)}])`;
 }
 
-function makeFieldsBody(definition: OpenAPIV2.DefinitionsObject): string[] {
+function makeFieldsBody(definition: Definition): string[] {
   if ('allOf' in definition) {
     const definitionKeys = Object.keys(definition.allOf);
     const allOfFieldsBody = definitionKeys
@@ -75,7 +57,7 @@ function makeFieldsBody(definition: OpenAPIV2.DefinitionsObject): string[] {
   return fieldsBody;
 }
 
-function makeDefinition(definitionName: string, definition: OpenAPIV2.DefinitionsObject): string {
+function makeDefinition(definitionName: string, definition: Definition): string {
   const fieldsBody = makeFieldsBody(definition);
   return `
     export const ${camelcase(definitionName)}Form = new FormGroup({

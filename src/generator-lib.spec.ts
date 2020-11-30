@@ -7,7 +7,8 @@
  */
 
 import { OpenAPI, OpenAPIV2, OpenAPIV3 } from 'openapi-types';
-import { makeForm, makeFileName, addRule, Rule, Definition, resetRules, loadSpec } from './generator-lib';
+import { makeForm, makeFileName, addRule, resetRules, loadSpec } from './generator-lib';
+import { Definition, Rule } from './rules';
 
 describe('generator-lib ', () => {
   let spec: OpenAPI.Document;

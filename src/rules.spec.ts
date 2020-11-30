@@ -6,8 +6,7 @@
  * Copyright (c) 2020 Verizon
  */
 
-import { Definition } from './generator-lib';
-import { requiredRule, patternRule, minLengthRule, maxLengthRule } from './rules';
+import { requiredRule, patternRule, minLengthRule, maxLengthRule, Definition } from './rules';
 
 describe('rules', () => {
   let definition: Partial<Definition>;

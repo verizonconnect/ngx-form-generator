@@ -6,7 +6,20 @@
  * Copyright (c) 2020 Verizon
  */
 
-import { Definition, Property } from './generator-lib';
+import { OpenAPIV2 } from 'openapi-types';
+
+export type Property = {
+  format?: string;
+  pattern?: string;
+  maxLength?: number;
+  minLength?: number;
+};
+
+export type Properties = Record<string, Property>;
+
+export type Rule = (fieldName: string, properties: Definition) => string;
+
+export type Definition = OpenAPIV2.DefinitionsObject;
 
 function hasMetadata(fieldName: string, definition: Definition, metadataName: string): boolean {
   return definition.properties[fieldName].hasOwnProperty(metadataName);
