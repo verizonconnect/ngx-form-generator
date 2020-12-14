@@ -1,6 +1,6 @@
 {
   "name": "@verizonconnect/ngx-form-generator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Generates an Angular ReactiveForm from a Swagger or OpenAPI definition",
   "main": "dist/generator-lib.js",
   "repository": "github:verizonconnect/ngx-form-generator",
