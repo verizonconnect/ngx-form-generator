@@ -105,4 +105,4 @@ export const addressModelForm = new FormGroup({
 
 ## License
 
-[MIT](https://github.com/verizonconnect/blob/master/LICENSE)
+[MIT](./LICENSE)
