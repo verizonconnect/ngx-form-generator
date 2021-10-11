@@ -9,11 +9,21 @@
 import { Project } from 'ts-morph';
 import prettier from 'prettier';
 import camelcase from 'camelcase';
-import { requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule, Definition, Rule } from './rules';
+import {
+  requiredRule,
+  patternRule,
+  minLengthRule,
+  maxLengthRule,
+  emailRule,
+  minimumRule,
+  maximumRule,
+  Definition,
+  Rule
+} from './rules';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { OpenAPI, OpenAPIV2, OpenAPIV3 } from 'openapi-types';
 
-const DEFAULT_RULES = [requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule];
+const DEFAULT_RULES = [requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule, minimumRule, maximumRule];
 
 let rules: Rule[] = [...DEFAULT_RULES];
 
