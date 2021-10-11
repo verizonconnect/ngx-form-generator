@@ -93,7 +93,7 @@ describe('rules', () => {
       expect(result).toEqual('Validators.min(1)');
     });
 
-    it('should not add the minimum validator is the field does not contain a minimum', () => {
+    it('should not add the minimum validator if the field does not contain a minimum', () => {
       const result = minimumRule('foo', definition as Definition);
 
       expect(result).toBeFalsy();
@@ -109,7 +109,7 @@ describe('rules', () => {
       expect(result).toEqual('Validators.max(1)');
     });
 
-    it('should not add the maximum validator is the field does not contain a maximum', () => {
+    it('should not add the maximum validator if the field does not contain a maximum', () => {
       const result = maximumRule('foo', definition as Definition);
 
       expect(result).toBeFalsy();
