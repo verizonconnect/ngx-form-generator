@@ -13,6 +13,8 @@ export type Property = {
   pattern?: string;
   maxLength?: number;
   minLength?: number;
+  minimum?: number;
+  maximum?: number;
 };
 
 export type Properties = Record<string, Property>;
@@ -51,4 +53,16 @@ export function maxLengthRule(fieldName: string, definition: Definition): string
 
 export function emailRule(fieldName: string, definition: Definition): string {
   return definition.properties[fieldName].format === 'email' ? `Validators.email` : '';
+}
+
+export function minimumRule(fieldName: string, definition: Definition): string {
+  return hasMetadata(fieldName, definition, 'minimum')
+    ? `Validators.min(${definition.properties[fieldName]['minimum']})`
+    : '';
+}
+
+export function maximumRule(fieldName: string, definition: Definition): string {
+  return hasMetadata(fieldName, definition, 'maximum')
+    ? `Validators.max(${definition.properties[fieldName]['maximum']})`
+    : '';
 }

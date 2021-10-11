@@ -6,7 +6,7 @@
  * Copyright (c) 2020 Verizon
  */
 
-import { requiredRule, patternRule, minLengthRule, maxLengthRule, Definition } from './rules';
+import { requiredRule, patternRule, minLengthRule, maxLengthRule, Definition, minimumRule, maximumRule } from './rules';
 
 describe('rules', () => {
   let definition: Partial<Definition>;
@@ -79,6 +79,38 @@ describe('rules', () => {
 
     it('should add the maxLength validator if the field contains a minLength', () => {
       const result = maxLengthRule('foo', definition as Definition);
+
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe('minimumRule', () => {
+    it('should add the minimum validator if the field contains a minimum', () => {
+      definition.properties!.foo.minimum = 1;
+
+      const result = minimumRule('foo', definition as Definition);
+
+      expect(result).toEqual('Validators.min(1)');
+    });
+
+    it('should not add the minimum validator if the field does not contain a minimum', () => {
+      const result = minimumRule('foo', definition as Definition);
+
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe('maximumRule', () => {
+    it('should add the maximum validator if the field contains a maximum', () => {
+      definition.properties!.foo.maximum = 1;
+
+      const result = maximumRule('foo', definition as Definition);
+
+      expect(result).toEqual('Validators.max(1)');
+    });
+
+    it('should not add the maximum validator if the field does not contain a maximum', () => {
+      const result = maximumRule('foo', definition as Definition);
 
       expect(result).toBeFalsy();
     });
