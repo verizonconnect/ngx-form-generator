@@ -18,12 +18,12 @@ import {
   minimumRule,
   maximumRule,
   Definition,
-  Rule
+  Rule, minItemsRule, maxItemsRule
 } from './rules';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { OpenAPI, OpenAPIV2, OpenAPIV3 } from 'openapi-types';
 
-const DEFAULT_RULES = [requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule, minimumRule, maximumRule];
+const DEFAULT_RULES = [requiredRule, patternRule, minLengthRule, maxLengthRule, emailRule, minimumRule, maximumRule, minItemsRule, maxItemsRule];
 
 let rules: Rule[] = [...DEFAULT_RULES];
 
@@ -48,8 +48,20 @@ function makeFieldRules(fieldName: string, definition: Definition): string {
     .join();
 }
 
+function makeControl(fieldName: string, definition: Definition): string {
+  if (definition.properties[fieldName].hasOwnProperty('type') &&
+    definition.properties[fieldName]['type'] === "array") {
+    return makeArray(fieldName, definition);
+  }
+  return makeField(fieldName, definition);
+}
+
 function makeField(fieldName: string, definition: Definition): string {
   return `${fieldName}: new FormControl(null, [${makeFieldRules(fieldName, definition)}])`;
+}
+
+function makeArray(fieldName: string, definition: Definition): string {
+  return `${fieldName}: new FormArray(null, [${makeFieldRules(fieldName, definition)}])`;
 }
 
 function makeFieldsBody(definition: Definition): string[] {
@@ -61,8 +73,10 @@ function makeFieldsBody(definition: Definition): string[] {
 
     return allOfFieldsBody;
   }
+  if(!definition.properties)
+    return [];
   const fields = Object.keys(definition.properties);
-  const fieldsBody = fields.map(fieldName => makeField(fieldName, definition)).filter(item => item !== '');
+  const fieldsBody = fields.map(fieldName => makeControl(fieldName, definition)).filter(item => item !== '');
 
   return fieldsBody;
 }
@@ -77,7 +91,7 @@ function makeDefinition(definitionName: string, definition: Definition): string 
 }
 
 function makeHeader(body: string): string {
-  return `import { FormGroup, FormControl, Validators } from '@angular/forms';
+  return `import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 
   ${body}`;
 }

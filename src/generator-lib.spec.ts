@@ -30,7 +30,7 @@ describe('generator-lib ', () => {
     it('should create typescript file with angular imports', () => {
       const result = makeForm(spec);
 
-      expect(result).toContain(`import { FormGroup, FormControl, Validators } from '@angular/forms';`);
+      expect(result).toContain(`import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms`);
     });
 
     it('should create typescript file with an export for the definition', () => {

@@ -8,13 +8,27 @@
 
 import { OpenAPIV2 } from 'openapi-types';
 
-export type Property = {
+export type openApiProperty = {
+  type?: string;
   format?: string;
   pattern?: string;
+  max?: number;
+  min?: number;
+  maxItems?: number;
+  minItems?: number;
   maxLength?: number;
   minLength?: number;
   minimum?: number;
   maximum?: number;
+};
+
+export type Property = {
+  format?: string;
+  pattern?: string;
+  max?: number;
+  min?: number;
+  maxLength?: number;
+  minLength?: number;
 };
 
 export type Properties = Record<string, Property>;
@@ -28,8 +42,12 @@ function hasMetadata(fieldName: string, definition: Definition, metadataName: st
 }
 
 function abstractRule(fieldName: string, definition: Definition, ruleName: keyof Property): string {
-  return hasMetadata(fieldName, definition, ruleName)
-    ? `Validators.${ruleName}(${definition.properties[fieldName][ruleName]})`
+  return abstractValidationRule(fieldName, definition, ruleName, ruleName);
+}
+
+function abstractValidationRule(fieldName: string, definition: Definition, hasRuleName: keyof openApiProperty, setRuleName: keyof Property): string {
+  return hasMetadata(fieldName, definition, hasRuleName)
+    ? `Validators.${setRuleName}(${definition.properties[fieldName][hasRuleName]})`
     : '';
 }
 
@@ -41,6 +59,14 @@ export function patternRule(fieldName: string, definition: Definition): string {
   return hasMetadata(fieldName, definition, 'pattern')
     ? `Validators.pattern(/${definition.properties[fieldName]['pattern']}/)`
     : '';
+}
+
+export function minItemsRule(fieldName: string, definition: Definition): string {
+  return abstractValidationRule(fieldName, definition, 'minItems', 'minLength');
+}
+
+export function maxItemsRule(fieldName: string, definition: Definition): string {
+  return abstractValidationRule(fieldName, definition, 'maxItems', 'maxLength');
 }
 
 export function minLengthRule(fieldName: string, definition: Definition): string {
@@ -56,13 +82,9 @@ export function emailRule(fieldName: string, definition: Definition): string {
 }
 
 export function minimumRule(fieldName: string, definition: Definition): string {
-  return hasMetadata(fieldName, definition, 'minimum')
-    ? `Validators.min(${definition.properties[fieldName]['minimum']})`
-    : '';
+  return abstractValidationRule(fieldName, definition, 'minimum', 'min');
 }
 
 export function maximumRule(fieldName: string, definition: Definition): string {
-  return hasMetadata(fieldName, definition, 'maximum')
-    ? `Validators.max(${definition.properties[fieldName]['maximum']})`
-    : '';
+  return abstractValidationRule(fieldName, definition, 'maximum', 'max');
 }
