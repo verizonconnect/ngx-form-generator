@@ -49,7 +49,7 @@ function makeFieldRules(fieldName: string, definition: Definition): string {
 }
 
 function makeField(fieldName: string, definition: Definition): string {
-  return `${fieldName}: new FormControl(null, [${makeFieldRules(fieldName, definition)}])`;
+  return `"${fieldName}": new FormControl(null, [${makeFieldRules(fieldName, definition)}])`;
 }
 
 function makeFieldsBody(definition: Definition): string[] {
