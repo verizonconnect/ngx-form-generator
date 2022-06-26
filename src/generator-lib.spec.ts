@@ -19,7 +19,33 @@ describe('generator-lib ', () => {
         foo: {
           required: ['bar'],
           properties: {
-            bar: {}
+            bar: {},
+            barArrays: {
+              type: 'array',
+              minItems: 2,
+              maxItems: 5,
+              items: {
+                type: 'string',
+                minLength: 1,
+                maxLength: 5,
+              }
+            },
+            barGroup: {
+              type: 'object',
+              required: ['innerBar'],
+              properties: {
+                innerBar: {
+                  type: 'string',
+                  minLength: 2,
+                  maxLength: 5,
+                  default: 'bar'
+                },
+                innerFoo: {
+                  type: 'string',
+                  maxLength: 30,
+                },
+              }
+            }
           }
         }
       }
@@ -30,7 +56,7 @@ describe('generator-lib ', () => {
     it('should create typescript file with angular imports', () => {
       const result = makeForm(spec);
 
-      expect(result).toContain(`import { FormGroup, FormControl, Validators } from '@angular/forms';`);
+      expect(result).toContain(`import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';`);
     });
 
     it('should create typescript file with an export for the definition', () => {
@@ -43,6 +69,112 @@ describe('generator-lib ', () => {
       const result = makeForm(spec);
 
       expect(result).toContain(`bar: new FormControl(null, [Validators.required])`);
+    });
+
+    it('should create form array', () => {
+      const result = makeForm(spec);
+
+      expect(result).toContain(`barArrays: new FormArray([`);
+    });
+
+    it('should create number of childs based on minItems', () => {
+      const result = makeForm(spec);
+
+      expect(result).toContain(`([
+    new FormControl(null, [Validators.minLength(1), Validators.maxLength(5)]),
+    new FormControl(null, [Validators.minLength(1), Validators.maxLength(5)])
+  ]`);
+    });
+
+    it('should create only one child if minItems is not specified', () => {
+      delete (spec as any).definitions.foo.properties.barArrays.minItems;
+      const result = makeForm(spec);
+
+      expect(result).toContain(`[
+    new FormControl(null, [Validators.minLength(1), Validators.maxLength(5)])
+  ]`);
+    });
+
+    it('should create form array of form group', () => {
+      (spec as any).definitions.foo.properties.barGroupArrays = {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            dummyFoo: {
+              type: 'string',
+              default: 'foo',
+              minLength: 1
+            },
+            dummaryBar: {
+              type: 'string',
+              default: 'bar',
+              minLength: 2
+            }
+
+          }
+        }
+      }
+
+      const result = makeForm(spec);
+
+      expect(result).toContain(`barGroupArrays: new FormArray([
+    new FormGroup({
+      dummyFoo: new FormControl('foo', [Validators.minLength(1)]),
+      dummaryBar: new FormControl('bar', [Validators.minLength(2)])
+    }),
+    new FormGroup({
+      dummyFoo: new FormControl('foo', [Validators.minLength(1)]),
+      dummaryBar: new FormControl('bar', [Validators.minLength(2)])
+    })
+  ])`)
+  })
+
+
+  it('should create nested form group', () => {
+    const result = makeForm(spec);
+
+    expect(result).toContain(`barGroup: new FormGroup({`);
+  });
+
+  it('should create nested child control with validation', () => {
+    const result = makeForm(spec);
+    expect(result).toContain(`innerBar: new FormControl('bar', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(5)
+    ]),`);
+    expect(result).toContain(`innerFoo: new FormControl(null, [Validators.maxLength(30)])`);
+  });
+
+  it('should create a deep nested form group with nested child control', () => {
+      (spec as any).definitions.foo.properties.barGroup.properties.dummyGroup = {
+        type: 'object',
+        required: ['dummyBar'],
+        properties: {
+          dummyBar: {
+            type: 'string',
+            minLength: 1
+          },
+          dummyFoo: {
+            type: 'string',
+            minLength: 3,
+            maxLength: 5,
+            default: 'dummy'
+          }
+        }
+      };
+      const result = makeForm(spec);
+      expect(result).toContain(`dummyGroup: new FormGroup({
+      dummyBar: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(1)
+      ]),
+      dummyFoo: new FormControl('dummy', [
+        Validators.minLength(3),
+        Validators.maxLength(5)
+      ])
+    })`);
     });
   });
 

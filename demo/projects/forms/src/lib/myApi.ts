@@ -1,4 +1,4 @@
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 export const addressModelForm = new FormGroup({
   firstName: new FormControl(null, [
@@ -41,5 +41,8 @@ export const addressModelForm = new FormGroup({
     Validators.pattern(/^[\w\@\!\#\%\&\'\*\+\-\/\=\?\`\{\|\}\~\.]+$/),
     Validators.email
   ]),
-  country: new FormControl('Singapore', [Validators.required, Validators.minLength(1)])
+  country: new FormControl('Singapore', [
+    Validators.required,
+    Validators.minLength(1)
+  ])
 });
