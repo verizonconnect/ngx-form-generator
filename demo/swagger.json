@@ -41,7 +41,7 @@
   },
   "definitions": {
     "AddressModel": {
-      "required": ["firstName", "lastName", "address", "city", "postalCode", "emailAddress"],
+      "required": ["firstName", "lastName", "address", "city", "postalCode", "emailAddress", "country"],
       "type": "object",
       "properties": {
         "firstName": {
@@ -84,6 +84,11 @@
           "format": "email",
           "pattern": "^[\\w\\@\\!\\#\\%\\&\\'\\*\\+\\-\\/\\=\\?\\`\\{\\|\\}\\~\\.]+$",
           "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "minLength": 1,
+          "default": "Singapore"
         }
       }
     }

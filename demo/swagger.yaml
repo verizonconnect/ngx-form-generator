@@ -48,6 +48,7 @@ definitions:
       - city
       - postalCode
       - emailAddress
+      - country
     type: object
     properties:
       firstName:
@@ -84,3 +85,7 @@ definitions:
         format: email
         pattern: '^[\w\@\!\#\%\&\''\*\+\-\/\=\?\`\{\|\}\~\.]+$'
         type: string
+      country:
+        type: string
+        minLength: 1
+        default: 'Singapore',

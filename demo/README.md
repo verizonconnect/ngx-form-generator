@@ -6,7 +6,7 @@ Run the following from the `/demo` directory:
 
 ```bash
 npm install
-npm run generate:form
-ng build form
+npm run generate:forms
+ng build forms
 ng serve
 ```
