@@ -68,6 +68,17 @@ function makeFieldsBody(definition: Definition): string[] {
   return fieldsBody;
 }
 
+export function makePrettyDefinitionWithHeader(definitionName: string, definition: Definition): string {
+  const fieldsBody = makeFieldsBody(definition);
+  const deffile =  `
+    export const ${camelcase(definitionName)}Form = new FormGroup({
+      ${fieldsBody}
+    });
+    `;
+  const headerfile = makeHeader(deffile);
+  return prettier.format(headerfile, { parser: 'typescript', singleQuote: true });
+}
+
 function makeDefinition(definitionName: string, definition: Definition): string {
   const fieldsBody = makeFieldsBody(definition);
   return `
@@ -83,7 +94,7 @@ function makeHeader(body: string): string {
   ${body}`;
 }
 
-export function makeForm(spec: OpenAPI.Document): string {
+export function getDefinitionKeys(spec: OpenAPI.Document): OpenAPIV2.DefinitionsObject| OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject{
   let definitions: OpenAPIV2.DefinitionsObject | OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject | undefined;
   if ('definitions' in spec) {
     definitions = spec.definitions;
@@ -97,8 +108,15 @@ export function makeForm(spec: OpenAPI.Document): string {
     throw new Error('Cannot find schemas/definitions');
   }
 
-  const definitionKeys = Object.keys(definitions);
+  return definitions;
+}
 
+export function makeForm(spec: OpenAPI.Document): string {
+  console.log('start define keys');
+  const definitions = getDefinitionKeys(spec);
+  const definitionKeys = Object.keys(definitions);
+  console.log('define keys completed');
+  
   const forms = definitionKeys
     .map(key => makeDefinition(key, (definitions as Record<string, Definition>)[key]))
     .filter(item => item != '')

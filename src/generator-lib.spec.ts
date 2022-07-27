@@ -133,7 +133,7 @@ describe('generator-lib openApi3', () => {
 
   describe('addRule', () => {
     beforeEach(() => {
-      (spec as any).components.schemas.foo.properties.bar.format = 'baz';
+      (spec as any).components.schemas.foo.SchemaObject.properties.bar.format = 'baz';
       (spec as any).components.schemas.foo.required = [];
     });
 
