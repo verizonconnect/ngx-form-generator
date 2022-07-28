@@ -8,8 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "generate:forms": "ngx-form-generator -i swagger.json -o projects/forms/src/lib/",
-    "generate:forms:yaml": "ngx-form-generator -i swagger.yaml -o projects/forms/src/lib/",
+    "generate:forms": "ngx-form-generator -i swagger.json -o projects/forms/src/lib/ -f myApi",
+    "generate:forms:yaml": "ngx-form-generator -i swagger.yaml -o projects/forms/src/lib/ -f myApi",
     "build:forms": "ng build forms"
   },
   "private": true,

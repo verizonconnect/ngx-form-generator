@@ -19,10 +19,10 @@ npm install @verizonconnect/ngx-form-generator -g
 ## CLI Usage
 
 ```bash
-ngx-form-generator -f swagger.json -o projects/forms/src/lib/
+ngx-form-generator -i swagger.json -o projects/forms/src/lib/
 
 # when installed locally in project run with npx
-npx ngx-form-generator -f swagger.yaml -o projects/forms/src/lib/
+npx ngx-form-generator -i swagger.yaml -o projects/forms/src/lib/
 ```
 
 | Option       | Alias            | Comment                                          | Required |

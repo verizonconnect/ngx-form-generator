@@ -11,9 +11,19 @@
     "test": "npm run build && jasmine dist/*.spec.js",
     "build": "tsc --project .\\",
     "lint": "eslint . --ext .ts",
+    "local": "node dist/generator-cli",
+    "localpet": "node dist/generator-cli -i swaggerPet3.yaml -o pet1",
+    "localpetm": "node dist/generator-cli -m true -i 'swaggerPet3.yaml' -o petmulti",
+    "start": "nodemon --exec ts-node src/index.ts",
+    "run": "node dist/index",
+    "tsc": "tsc",
+    "tscp": "tsc --project .\\",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "author": "Martin McWhorter <martin@mcwhorter.org> (https://github.com/martinmcwhorter)",
+  "contributors": [
+    "ozbob (https://github.com/ozbob)"
+  ],
   "license": "MIT",
   "keywords": [
     "angular",
@@ -42,6 +52,7 @@
     "husky": "^7.0.4",
     "jasmine": "^3.2.0",
     "lint-staged": "^11.2.3",
+    "nodemon": "^2.0.19",
     "openapi-types": "^7.0.1",
     "typescript": "^3.8.3"
   },
