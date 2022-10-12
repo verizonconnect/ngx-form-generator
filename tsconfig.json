@@ -2,7 +2,7 @@
   "include": ["./src/"],
   "compilerOptions": {
     "target": "es2017",
-    "module": "commonjs",
+    "module": "CommonJS",
     "lib": ["es2015", "es7"],
     "declaration": true,
     "outDir": "./dist/",

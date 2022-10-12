@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.0.2",
-    "camelcase": "^5.0.0",
+    "camelcase": "^7.0.0",
     "prettier": "^1.19.1",
     "ts-morph": "^15.1.0",
     "yaml": "^1.8.3",
