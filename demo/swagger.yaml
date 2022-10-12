@@ -88,4 +88,4 @@ definitions:
       country:
         type: string
         minLength: 1
-        default: 'Singapore',
+        default: 'Singapore'

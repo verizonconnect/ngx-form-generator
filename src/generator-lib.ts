@@ -49,6 +49,32 @@ function makeFieldRules(fieldName: string, definition: Definition): string {
 }
 
 function makeField(fieldName: string, definition: Definition): string {
+  if (definition.properties[fieldName]['type'] === 'array') {
+    const itemDefinition = definition.properties[fieldName]['items'];
+    const minItems = +definition.properties[fieldName]['minItems'] || 1;
+
+    const items: string[] = [];
+    if (itemDefinition['type'] === 'object') {
+      for (let i = 0; i <= minItems; i++) {
+        items.push(`new FormGroup({${makeFieldsBody(itemDefinition)}})`);
+      }
+    } else {
+      const _dummyProps: Definition = {
+        properties: {
+          dummy: itemDefinition
+        }
+      }
+      const value = 'default' in _dummyProps.properties.dummy ? `'${_dummyProps.properties.dummy.default}'` : null;
+      for (let i = 1; i <= minItems; i++) {
+        items.push(`new FormControl(${value}, [${makeFieldRules('dummy', _dummyProps)}])`);
+      }
+    }
+    return `"${fieldName}": new FormArray([${items.join(',')}])`;
+  } else if (definition.properties[fieldName]['type'] === 'object') {
+    const constructFormGroup = makeFieldsBody(definition.properties[fieldName]);
+    return `"${fieldName}": new FormGroup({${constructFormGroup}})`;
+  }
+
   const value = 'default' in definition.properties[fieldName] ? `'${definition.properties[fieldName].default}'` : null;
   return `"${fieldName}": new FormControl(${value}, [${makeFieldRules(fieldName, definition)}])`;
 }
@@ -78,7 +104,7 @@ function makeDefinition(definitionName: string, definition: Definition): string 
 }
 
 function makeHeader(body: string): string {
-  return `import { FormGroup, FormControl, Validators } from '@angular/forms';
+  return `import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
   ${body}`;
 }
