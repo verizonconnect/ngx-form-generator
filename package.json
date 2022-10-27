@@ -39,7 +39,7 @@
     "commitizen": "^4.2.4",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^6.10.1",
-    "husky": "^7.0.4",
+    "husky": "^8.0.1",
     "jasmine": "^4.4.0",
     "lint-staged": "^13.0.3",
     "openapi-types": "^7.0.1",
